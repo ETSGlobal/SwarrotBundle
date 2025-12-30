@@ -1,0 +1,8 @@
+parameters:
+  swarrot.data_collector.class: Swarrot\SwarrotBundle\DataCollector\SwarrotDataCollector
+
+services:
+  swarrot.data_collector:
+    class: '%swarrot.data_collector.class%'
+    tags:
+      - { name: 'data_collector', template: '@Swarrot/Collector/collector.html.twig', id: swarrot }

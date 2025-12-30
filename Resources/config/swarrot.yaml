@@ -1,0 +1,109 @@
+services:
+  swarrot.factory.pecl:
+    class: Swarrot\SwarrotBundle\Broker\PeclFactory
+    arguments:
+      - '@swarrot.logger'
+      - '%swarrot.publisher_confirm_enable%'
+      - '%swarrot.publisher_confirm_timeout%'
+    tags:
+      - { name: 'swarrot.provider_factory', alias: pecl }
+
+  swarrot.factory.amqp_lib:
+    class: Swarrot\SwarrotBundle\Broker\AmqpLibFactory
+    tags:
+      - { name: 'swarrot.provider_factory', alias: amqp_lib }
+
+  swarrot.command.base:
+    class: Swarrot\SwarrotBundle\Command\SwarrotCommand
+    abstract: true
+    public: true
+    arguments:
+      - '@swarrot.factory.default'
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+      - null
+
+  swarrot.publisher:
+    class: Swarrot\SwarrotBundle\Broker\Publisher
+    public: true
+    arguments:
+      - '@swarrot.factory.default'
+      - '@event_dispatcher'
+      - '%swarrot.messages_types%'
+      - '@swarrot.logger'
+
+
+  swarrot.processor.ack:
+    class: Swarrot\SwarrotBundle\Processor\Ack\AckProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\Ack\AckProcessor
+      - '@swarrot.factory.default'
+      - '@swarrot.logger'
+
+  swarrot.processor.doctrine_connection:
+    class: Swarrot\SwarrotBundle\Processor\Doctrine\ConnectionProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\Doctrine\ConnectionProcessor
+      - '@doctrine'
+
+  swarrot.processor.doctrine_object_manager:
+    class: Swarrot\SwarrotBundle\Processor\Doctrine\ObjectManagerProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\Doctrine\ObjectManagerProcessor
+      - '@doctrine'
+
+  swarrot.processor.exception_catcher:
+    class: Swarrot\SwarrotBundle\Processor\ExceptionCatcher\ExceptionCatcherProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\ExceptionCatcher\ExceptionCatcherProcessor
+      - '@swarrot.logger'
+
+  swarrot.processor.max_execution_time:
+    class: Swarrot\SwarrotBundle\Processor\MaxExecutionTime\MaxExecutionTimeProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\MaxExecutionTime\MaxExecutionTimeProcessor
+      - '@swarrot.logger'
+
+  swarrot.processor.max_messages:
+    class: Swarrot\SwarrotBundle\Processor\MaxMessages\MaxMessagesProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\MaxMessages\MaxMessagesProcessor
+      - '@swarrot.logger'
+
+  swarrot.processor.retry:
+    class: Swarrot\SwarrotBundle\Processor\Retry\RetryProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\Retry\RetryProcessor
+      - '@swarrot.factory.default'
+      - '@swarrot.logger'
+
+  swarrot.processor.signal_handler:
+    class: Swarrot\SwarrotBundle\Processor\SignalHandler\SignalHandlerProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\SignalHandler\SignalHandlerProcessor
+      - '@swarrot.logger'
+
+  swarrot.processor.insomniac:
+    class: Swarrot\SwarrotBundle\Processor\Insomniac\InsomniacProcessorConfigurator
+    arguments:
+      - '@swarrot.logger'
+
+  swarrot.processor.instant_retry:
+    class: Swarrot\SwarrotBundle\Processor\InstantRetry\InstantRetryProcessorConfigurator
+    arguments:
+      - '@swarrot.logger'
+
+  swarrot.processor.memory_limit:
+    class: Swarrot\SwarrotBundle\Processor\MemoryLimit\MemoryLimitProcessorConfigurator
+    arguments:
+      - '@swarrot.logger'
+
+  swarrot.processor.services_resetter:
+    class: Swarrot\SwarrotBundle\Processor\ServicesResetter\ServicesResetterProcessorConfigurator
+    arguments:
+      - Swarrot\Processor\ServicesResetter\ServicesResetterProcessor
+      - '@services_resetter'
